@@ -1,1 +1,13 @@
+{
+  "name": "battle-mobile-india-panel",
+  "version": "1.0.0",
+  "description": "Control panel and API backend for BATTLE MOBILE INDIA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
 
