@@ -1,1 +1,50 @@
+using System;
+using System.Collections.Generic;
+
+namespace BattleMobileIndia.Data
+{
+    [Serializable]
+    public class DistrictEntry
+    {
+        public string id;
+        public string name;
+        public string sceneName;
+    }
+
+    [Serializable]
+    public class StateEntry
+    {
+        public string id;
+        public string name;
+        public string sceneName;
+        public List<DistrictEntry> districts = new List<DistrictEntry>();
+    }
+
+    [Serializable]
+    public class IndiaMainEntry
+    {
+        public string id;
+        public string displayName;
+        public string sceneName;
+        public int maxPlayers = 100;
+        public int countdownSeconds = 25;
+    }
+
+    [Serializable]
+    public class SelectedRegionEntry
+    {
+        public string level;
+        public string state;
+        public string district;
+        public string sceneName;
+    }
+
+    [Serializable]
+    public class RegionMapCatalog
+    {
+        public SelectedRegionEntry selectedRegion = new SelectedRegionEntry();
+        public IndiaMainEntry indiaMain = new IndiaMainEntry();
+        public List<StateEntry> states = new List<StateEntry>();
+    }
+}
 
