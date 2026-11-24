@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BATTLE MOBILE INDIA - Control Panel</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+    .card { background: #1e293b; border-radius: 10px; padding: 16px; margin-bottom: 16px; max-width: 720px; }
+    h1, h2 { margin-top: 0; }
+    label { display: block; margin-top: 10px; font-size: 14px; color: #cbd5e1; }
+    input, select, button { margin-top: 6px; padding: 8px 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; }
+    button { background: #2563eb; border: none; cursor: pointer; font-weight: bold; }
+    button:hover { background: #1d4ed8; }
+    pre { background: #020617; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>BATTLE MOBILE INDIA — Panel</h1>
+
+  <div class="card">
+    <h2>Match & Region Config</h2>
+    <label>Players Count (Max 100)</label>
+    <input id="maxPlayersInput" type="number" value="100" min="1" max="100" />
+
+    <label>Pre-Match Countdown (Seconds)</label>
+    <input id="countdownInput" type="number" value="25" min="0" max="120" />
+
+    <label>Map Level</label>
+    <select id="levelSelect">
+      <option value="India">India</option>
+      <option value="State">State</option>
+      <option value="District">District</option>
+    </select>
+
+    <label>State</label>
+    <select id="stateSelect"></select>
+
+    <label>District</label>
+    <select id="districtSelect"></select>
+
+    <br /><br />
+    <button id="saveConfigBtn">Save Match Config</button>
+  </div>
+
+  <div class="card">
+    <h2>Live Panel State</h2>
+    <pre id="stateOutput">Loading...</pre>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
 
