@@ -1,77 +1,83 @@
 using UnityEngine;
 using UnityEngine.UI;
-using BattleMobileIndia.Core;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 namespace BattleMobileIndia.UI
 {
-    public class LobbyUI : MonoBehaviour
+    public class FreeFireLobbyUI : MonoBehaviour
     {
-        [Header("UI Panels & Texts")]
-        public Text playerInfoText;
-        public Text selectedMapText;
-        public GameObject settingsPanel;
-        public GameObject mapSelectorPanel;
+        [Header("Player Profile HUD")]
+        public TMP_Text playerNameText;
+        public TMP_Text playerUidText;
+        public TMP_Text selectedMapText;
 
-        [Header("Buttons")]
-        public Button playButton;
-        public Button openSettingsButton;
-        public Button openMapSelectorButton;
+        [Header("Map Quick Select Buttons")]
+        public Button indiaMapButton;
+        public Button stateMapButton;
+        public Button districtMapButton;
+
+        [Header("Start Match Button")]
+        public Button startMatchButton;
+        public TMP_Text startButtonLabel;
+
+        [Header("Default Scene Names")]
+        public string indiaSceneName = "03_Map_India_Main";
+        public string stateSceneName = "04_Map_State_Preset";
+        public string districtSceneName = "05_Map_District_Preset";
+
+        private string currentSceneToLoad;
 
         private void Start()
         {
-            if (GameManager.Instance != null && playerInfoText != null)
+            string pName = PlayerPrefs.GetString("BMI_PlayerName", "BMI_Survivor");
+            string pUid = PlayerPrefs.GetString("BMI_PlayerUID", "");
+
+            if (string.IsNullOrEmpty(pUid))
             {
-                playerInfoText.text = $"{GameManager.Instance.ActivePlayerName} | {GameManager.Instance.ActivePlayerId}";
+                pUid = "UID: " + Random.Range(10000000, 99999999);
+                PlayerPrefs.SetString("BMI_PlayerUID", pUid);
+                PlayerPrefs.Save();
             }
 
-            RefreshSelectedMapLabel();
+            if (playerNameText != null) playerNameText.text = pName;
+            if (playerUidText != null) playerUidText.text = pUid;
 
-            if (playButton != null)
-            {
-                playButton.onClick.AddListener(OnPlayClicked);
-            }
+            if (indiaMapButton != null)
+                indiaMapButton.onClick.AddListener(() => SelectMap("MAP: INDIA (100P)", indiaSceneName));
 
-            if (openSettingsButton != null)
-            {
-                openSettingsButton.onClick.AddListener(ToggleSettings);
-            }
+            if (stateMapButton != null)
+                stateMapButton.onClick.AddListener(() => SelectMap("MAP: STATE PRESET", stateSceneName));
 
-            if (openMapSelectorButton != null)
+            if (districtMapButton != null)
+                districtMapButton.onClick.AddListener(() => SelectMap("MAP: DISTRICT PRESET", districtSceneName));
+
+            if (startMatchButton != null)
+                startMatchButton.onClick.AddListener(OnStartMatchClicked);
+
+            SelectMap("MAP: INDIA (100P)", indiaSceneName);
+        }
+
+        public void SelectMap(string label, string sceneName)
+        {
+            currentSceneToLoad = sceneName;
+            PlayerPrefs.SetString("BMI_SelectedScene", sceneName);
+            PlayerPrefs.Save();
+
+            if (selectedMapText != null)
             {
-                openMapSelectorButton.onClick.AddListener(ToggleMapSelector);
+                selectedMapText.text = label;
             }
         }
 
-        public void RefreshSelectedMapLabel()
+        public void OnStartMatchClicked()
         {
-            if (selectedMapText != null && SceneFlowController.Instance != null)
+            string targetScene = string.IsNullOrEmpty(currentSceneToLoad) ? indiaSceneName : currentSceneToLoad;
+            if (startButtonLabel != null)
             {
-                selectedMapText.text = $"Map: {SceneFlowController.Instance.SelectedRegionLabel}";
+                startButtonLabel.text = "MATCHMAKING...";
             }
-        }
-
-        public void ToggleSettings()
-        {
-            if (settingsPanel != null)
-            {
-                settingsPanel.SetActive(!settingsPanel.activeSelf);
-            }
-        }
-
-        public void ToggleMapSelector()
-        {
-            RefreshSelectedMapLabel();
-            if (mapSelectorPanel != null)
-            {
-                mapSelectorPanel.SetActive(!mapSelectorPanel.activeSelf);
-            }
-        }
-
-        private void OnPlayClicked()
-        {
-            GameManager.Instance?.SetGameState(GameState.PreMatchCountdown);
-            SceneFlowController.Instance?.StartSelectedMatch();
+            SceneManager.LoadScene(targetScene);
         }
     }
 }
-
