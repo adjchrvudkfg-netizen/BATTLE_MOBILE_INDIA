@@ -1,53 +1,87 @@
 using UnityEngine;
 using UnityEngine.UI;
-using BattleMobileIndia.Core;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 namespace BattleMobileIndia.UI
 {
-    public class LoginUI : MonoBehaviour
+    public class FreeFireLoginUI : MonoBehaviour
     {
-        [Header("UI References")]
-        public InputField playerNameInput;
-        public Text statusText;
+        [Header("Login UI Elements")]
+        public TMP_InputField nicknameInput;
         public Button guestLoginButton;
-        public Button startButton;
+        public Button googleLoginButton;
+        public Button confirmLoginButton;
+        public TMP_Text statusText;
 
-        private void Awake()
+        [Header("Scene Flow")]
+        public string lobbySceneName = "02_Lobby";
+
+        private const string PlayerNameKey = "BMI_PlayerName";
+        private const string LoginMethodKey = "BMI_LoginMethod";
+
+        private void Start()
         {
-            if (guestLoginButton != null)
+            if (nicknameInput != null && PlayerPrefs.HasKey(PlayerNameKey))
             {
-                guestLoginButton.onClick.AddListener(OnGuestLoginClicked);
+                nicknameInput.text = PlayerPrefs.GetString(PlayerNameKey);
             }
 
-            if (startButton != null)
-            {
-                startButton.onClick.AddListener(OnEnterLobbyClicked);
-            }
+            if (guestLoginButton != null)
+                guestLoginButton.onClick.AddListener(OnGuestLogin);
+
+            if (googleLoginButton != null)
+                googleLoginButton.onClick.AddListener(OnGoogleLogin);
+
+            if (confirmLoginButton != null)
+                confirmLoginButton.onClick.AddListener(OnConfirmNicknameLogin);
+
+            SetStatus("Tap Guest or Google to enter BATTLE MOBILE INDIA");
         }
 
-        private void OnGuestLoginClicked()
+        public void OnGuestLogin()
         {
-            string enteredName = playerNameInput != null ? playerNameInput.text : "BMI_Guest";
-            string randomId = $"BMI_{Random.Range(10000, 99999)}";
+            string randomId = Random.Range(1000, 9999).ToString();
+            string guestName = $"BMI_Survivor_{randomId}";
+            SaveAndEnterLobby(guestName, "Guest");
+        }
 
-            if (GameManager.Instance != null)
+        public void OnGoogleLogin()
+        {
+            string savedOrDefault = (nicknameInput != null && !string.IsNullOrWhiteSpace(nicknameInput.text))
+                ? nicknameInput.text.Trim()
+                : "BMI_GooglePlayer";
+
+            SaveAndEnterLobby(savedOrDefault, "Google");
+        }
+
+        public void OnConfirmNicknameLogin()
+        {
+            if (nicknameInput == null || string.IsNullOrWhiteSpace(nicknameInput.text))
             {
-                GameManager.Instance.SetPlayerSession(randomId, enteredName);
-                GameManager.Instance.SetGameState(GameState.Lobby);
+                SetStatus("Please enter a player nickname first.");
+                return;
             }
 
+            SaveAndEnterLobby(nicknameInput.text.Trim(), "Account");
+        }
+
+        private void SaveAndEnterLobby(string playerName, string method)
+        {
+            PlayerPrefs.SetString(PlayerNameKey, playerName);
+            PlayerPrefs.SetString(LoginMethodKey, method);
+            PlayerPrefs.Save();
+
+            SetStatus($"Welcome {playerName}! Loading Lobby...");
+            SceneManager.LoadScene(lobbySceneName);
+        }
+
+        private void SetStatus(string msg)
+        {
             if (statusText != null)
             {
-                statusText.text = $"Logged in as {enteredName} ({randomId})";
+                statusText.text = msg;
             }
-
-            SceneFlowController.Instance?.LoadLobby();
-        }
-
-        private void OnEnterLobbyClicked()
-        {
-            OnGuestLoginClicked();
         }
     }
 }
-
