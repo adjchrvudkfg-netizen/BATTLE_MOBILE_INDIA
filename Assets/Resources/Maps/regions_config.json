@@ -1,1 +1,36 @@
+{
+  "selectedRegion": {
+    "level": "India",
+    "state": "Rajasthan",
+    "district": "Jaipur",
+    "sceneName": "03_Map_India_Main"
+  },
+  "indiaMain": {
+    "id": "india_main",
+    "displayName": "BATTLE MOBILE INDIA - All India",
+    "sceneName": "03_Map_India_Main",
+    "maxPlayers": 100,
+    "countdownSeconds": 25
+  },
+  "states": [
+    {
+      "id": "rajasthan",
+      "name": "Rajasthan",
+      "sceneName": "04_Map_State_Preset",
+      "districts": [
+        { "id": "jaipur", "name": "Jaipur", "sceneName": "05_Map_District_Preset" },
+        { "id": "jodhpur", "name": "Jodhpur", "sceneName": "05_Map_District_Preset" }
+      ]
+    },
+    {
+      "id": "maharashtra",
+      "name": "Maharashtra",
+      "sceneName": "04_Map_State_Preset",
+      "districts": [
+        { "id": "mumbai", "name": "Mumbai", "sceneName": "05_Map_District_Preset" },
+        { "id": "pune", "name": "Pune", "sceneName": "05_Map_District_Preset" }
+      ]
+    }
+  ]
+}
 
